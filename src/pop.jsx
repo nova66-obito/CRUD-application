@@ -1,90 +1,159 @@
-import { useState } from 'react';
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
-import Modal from 'react-bootstrap/Modal';
-export default function Popup(yyy){
-  console.log(yyy.reval,"pop")
-  const changedata=()=>{
-    fetch(`https://67d7ed129d5e3a10152c9ada.mockapi.io/user/users${yyy.reval.id}`, {
-      method: 'PUT', // or PATCH
+import React from "react";
+import { useState } from "react";
+import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
+import Modal from "react-bootstrap/Modal";
+
+function Popup(abc) {
+  console.log(abc.fieldData, "###");
+
+  const updateData = () => {
+    fetch(`https://655f2e8a879575426b44c20a.mockapi.io/student_data_crud_app/studentsData/${abc.fieldData.id}`, {
+      method: "PUT", // or PATCH
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(abc.fieldData),
+    })
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        // handle error
+      })
+      .then((task) => {
+        alert("Success....!");
+        abc.setRef(!abc.ref);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+      abc.boxClose();
+  };
+
+  const createUser = () => {  
+    fetch('https://655f2e8a879575426b44c20a.mockapi.io/student_data_crud_app/studentsData', {
+      method: 'POST',
       headers: {'content-type':'application/json'},
-      body: JSON.stringify(yyy.reval)
+      // Send your data in the request body as JSON
+      body: JSON.stringify(abc.fieldData)
     }).then(res => {
       if (res.ok) {
           return res.json();
       }
       // handle error
     }).then(task => {
-      alert("success")
+      // do something with the new task
+      alert("User added successfully...!");
+      abc.setRef(!abc.ref);
     }).catch(error => {
       // handle error
-    });
-    yyy.close()
+      console.log(error);
+    })
+    
+    abc.boxClose();
   }
-  return(
+
+
+  return (
     <>
-       <Button variant="primary" onClick={yyy.open}>
-        Launch demo modal
-      </Button>
-      <Modal show={yyy.do} onHide={yyy.close}>
+      <Modal show={abc.boxShow} onHide={abc.boxClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Modal heading</Modal.Title>
+          <Modal.Title> {abc.fieldData.id ? "Edit Data ✍️" : "Add Data 📝"}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>name</Form.Label>
+              <Form.Label>Name</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="enter your name"
+                placeholder="Enter your name"
                 autoFocus
-                defaultValue={yyy.reval.name}
-                onChange={(e)=>yyy.setreval({...yyy.reval,name:e.target.value})}
+                defaultValue={abc.fieldData.name}
+                onChange={(e) =>
+                  abc.setFieldData({ ...abc.fieldData, name: e.target.value })
+                }
               />
             </Form.Group>
+
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>Email address</Form.Label>
+              <Form.Label>Email</Form.Label>
               <Form.Control
                 type="email"
-                placeholder="enter your email"
+                placeholder="Enter your email"
                 autoFocus
-                defaultValue={yyy.reval.emailid}
-                onChange={(e)=>yyy.setreval({...yyy.reval,emailid:e.target.value})}
+                defaultValue={abc.fieldData.emailId}
+                onChange={(e) =>
+                  abc.setFieldData({
+                    ...abc.fieldData,
+                    emailId: e.target.value,
+                  })
+                }
               />
             </Form.Group>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>phone no</Form.Label>
-              <Form.Control
-                type="number"
-                placeholder="enter your mobile num"
-                autoFocus
-                defaultValue={yyy.reval.phonenum}
-                onChange={(e)=>yyy.setreval({...yyy.reval,phonenum:e.target.value})}
 
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+              <Form.Label>Phone No</Form.Label>
+              <Form.Control
+                type="tel"
+                placeholder="Enter the phone number"
+                autoFocus
+                defaultValue={abc.fieldData.phoneNo}
+                onChange={(e) =>
+                  abc.setFieldData({
+                    ...abc.fieldData,
+                    phoneNo: e.target.value,
+                  })
+                }
               />
             </Form.Group>
+
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>location</Form.Label>
+              <Form.Label>Qualification</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="enter your location"
+                placeholder="Enter the qualification"
                 autoFocus
-                defaultValue={yyy.reval.location}
-                onChange={(e)=>yyy.setreval({...yyy.reval,location:e.target.value})}
+                defaultValue={abc.fieldData.qualification}
+                onChange={(e) =>
+                  abc.setFieldData({
+                    ...abc.fieldData,
+                    qualification: e.target.value,
+                  })
+                }
+              />
+            </Form.Group>
 
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+              <Form.Label>Location</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter your location"
+                autoFocus
+                defaultValue={abc.fieldData.location}
+                onChange={(e) =>
+                  abc.setFieldData({
+                    ...abc.fieldData,
+                    location: e.target.value,
+                  })
+                }
               />
             </Form.Group>
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={yyy.close}>
+          <Button variant="secondary" onClick={abc.boxClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={changedata}>
+          {abc.fieldData.id ? <Button variant="primary" onClick={updateData}>
             Save Changes
-          </Button>
+          </Button> :
+            <Button variant="success" onClick={createUser}>
+            Create 
+          </Button>}         
         </Modal.Footer>
       </Modal>
     </>
-  )
+  );
 }
+
+export default Popup;

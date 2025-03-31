@@ -17,3 +17,8 @@ tr{
   font-size: 1.3rem;
   text-align: center;
 }
+@media screen and (max-width: 900px) and (min-width: 600px){
+  tr{
+    font-size: 10px !important;
+  }
+}

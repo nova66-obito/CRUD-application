@@ -1,29 +1,36 @@
 import { useState } from 'react'
-import './App.css'
+import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Cell from './table'
+import TableComponent from './table';
+import { Container } from 'react-bootstrap';
 import Popup from './pop';
+
 function App() {
   const [show, setShow] = useState(false);
-  let [def,setdef] = useState({
-    name:null,
-    location:null,
-    phonenum:null,
-    emailid:null,
-  })
+  const [status, setStatus] = useState(false);
+  const [tempData, setTempData] = useState({});
+
   const handleClose = () => setShow(false);
-  const handleShow = (copy) =>{
-    setdef(copy)
+  const handleShow = (rowData) => { 
+    if(rowData) {
+      setTempData(rowData);
+    }else {
+      setTempData({
+        name: null,
+        emailId : null,
+        location: null,
+        phoneNo : null,
+        qualification : null
+      })
+    }
     setShow(true);
-  } 
+  };
+
   return (
-    <>
-       <div className='main'>
-        <h1>curd table</h1>
-        <Popup  do={show} close={handleClose} setreval={setdef} reval={def} />
-         <Cell open={handleShow}/>
-       </div>
-    </>
+    <Container fluid className='p-4'>
+      <Popup ref={status} setRef={setStatus} boxShow={show} boxClose={handleClose} fieldData={tempData} setFieldData={setTempData}/>
+     <TableComponent boxClick={handleShow} update={status} setUpdate={setStatus}  />
+    </Container>
   )
 }
 

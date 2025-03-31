@@ -1,56 +1,104 @@
-import { useEffect, useState } from 'react';
-import Table from 'react-bootstrap/Table';
-export default function Cell(xxx){
-  console.log(xxx,"th")
-  let[count,setCount] = useState(0);
-  let [over,setover] = useState(null)
-  
-  useEffect(function(){
-    let data = fetch('https://67d7ed129d5e3a10152c9ada.mockapi.io/user/users', {
-      method: 'GET',
-      headers: {'content-type':'application/json'},
-    }).then(res => {
-      if (res.ok) {
-          return res.json();
+import Button from "react-bootstrap/Button";
+import React from "react";
+import { useEffect } from "react";
+import Table from "react-bootstrap/Table";
+import { useState } from "react";
+
+function TableComponent(bcd) {
+  const [tableData, setTableData] = useState(null);
+
+  useEffect(() => {
+    fetch(
+      "https://655f2e8a879575426b44c20a.mockapi.io/student_data_crud_app/studentsData",
+      {
+        method: "GET",
+        headers: { "content-type": "application/json" },
       }
-      // handle error
-    }).then(tasks => {
-      setover(tasks)
-      // Do something with the list of tasks
-    }).catch(error => {
-      // handle error
-    })},[])
-  console.log(over)
-  return(
+    )
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        // handle error
+      })
+      .then((tasks) => {
+        setTableData(tasks.reverse());
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [bcd.update]);
+
+  console.log(tableData);
+
+  const deleteUser = (id) => {
+    fetch(`https://67d7ed129d5e3a10152c9ada.mockapi.io/user/users/${id}`, {
+      method: "DELETE",
+    })
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        }
+        // handle error
+      })
+      .then((task) => {
+        // Do something with deleted task
+        alert("Deleted successfully....!");
+        bcd.setUpdate(!bcd.update)
+      })
+      .catch((error) => {
+        // handle error
+        console.log(error);
+      });
+  };
+
+ 
+  return (
     <>
-      <Table striped bordered hover variant="dark">
-      <thead>
-        <tr>
-          <th>id</th>
-          <th>Name</th>
-          <th>email</th>
-          <th>phone</th>
-          <th>location</th>
-          <th>action</th>
+    <Button onClick={() => bcd.boxClick()} variant={"warning"} className="fs-5 mb-3"> Add Data </Button>
+    <Table striped bordered hover variant="dark">
+      <thead className="text-center">
+        <tr className="fs-3">
+          <th className="p-4 bg-primary">S.No</th>
+          <th className="p-4 bg-primary">Name</th>
+          <th className="p-4 bg-primary">Email</th>
+          <th className="p-4 bg-primary">Location</th>
+          <th className="p-4 bg-primary">Phone No</th>
+          <th className="p-4 bg-primary">Qualification</th>
+          <th className="p-4 bg-primary">Action</th>
         </tr>
       </thead>
-      <tbody>
-       {over&&over.map((val,j)=>{
-        return(
-          <>
-          <tr>
-              <td>{count+=1}</td>
-              <td>{over[j].name}</td>
-              <td>{over[j].emailid}</td>
-              <td>{over[j].phonenum}</td>       
-              <td>{over[j].location}</td>
-              <td><button onClick={()=>xxx.open(val)} className='btn bg-success text-light'>Edit</button><button  className='btn text-light m-2 bg-danger'>delete</button></td>
-          </tr>
-          </>
-        )
-       })}
+      <tbody className="text-center">
+        {tableData &&
+          tableData.map((item, out) => {
+            return (
+              <tr className="fs-5">
+                <td className="p-3">{out + 1}</td>
+                <td className="p-3">{item.name}</td>
+                <td className="p-3">{item.emailId}</td>
+                <td className="p-3">{item.location}</td>
+                <td className="p-3">{item.phoneNo}</td>
+                <td className="p-3">{item.qualification}</td>
+                <td className="p-3">
+                  <Button
+                    onClick={() => bcd.boxClick(item)}
+                    variant="success me-3"
+                  >
+                    {" "}
+                    Edit{" "}
+                  </Button>
+                  <Button variant="danger" onClick={() => deleteUser(item.id)}>
+                    {" "}
+                    Delete{" "}
+                  </Button>
+                </td>
+              </tr>
+            );
+          })}
       </tbody>
     </Table>
     </>
-  )
+  );
 }
+
+export default TableComponent;
