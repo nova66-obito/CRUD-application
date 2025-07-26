@@ -27,9 +27,9 @@ function App() {
   };
 
   return (
-    <Container fluid className='p-4'>
-      <Popup ref={status} setRef={setStatus} boxShow={show} boxClose={handleClose} fieldData={tempData} setFieldData={setTempData}/>
-     <TableComponent boxClick={handleShow} update={status} setUpdate={setStatus}  />
+    <Container fluid className='p-4 overall'>
+     <Popup ref={status} setRef={setStatus} boxShow={show} boxClose={handleClose} fieldData={tempData} setFieldData={setTempData}/>
+     <TableComponent boxClick={handleShow} update={status} setUpdate={setStatus}  className="tablecontainer col-center"/>
     </Container>
   )
 }

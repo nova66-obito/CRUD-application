@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import Table from "react-bootstrap/Table";
 import { useState } from "react";
 
-function TableComponent(bcd) {
+function TableComponent({ update, setUpdate, boxClick }) {
   const [tableData, setTableData] = useState(null);
 
   useEffect(() => {
@@ -19,85 +19,95 @@ function TableComponent(bcd) {
         if (res.ok) {
           return res.json();
         }
-        // handle error
+        throw new Error("Network response was not ok");
       })
       .then((tasks) => {
         setTableData(tasks.reverse());
       })
       .catch((error) => {
-        console.log(error);
+        console.error("Error fetching data:", error);
       });
-  }, [bcd.update]);
-
-  console.log(tableData);
+  }, [update]);
 
   const deleteUser = (id) => {
-    fetch(`https://67d7ed129d5e3a10152c9ada.mockapi.io/user/users/${id}`, {
-      method: "DELETE",
-    })
+    // Fixed the API endpoint to match where you're fetching data from
+    fetch(
+      `https://655f2e8a879575426b44c20a.mockapi.io/student_data_crud_app/studentsData/${id}`,
+      {
+        method: "DELETE",
+      }
+    )
       .then((res) => {
         if (res.ok) {
           return res.json();
         }
-        // handle error
+        throw new Error("Delete failed");
       })
-      .then((task) => {
-        // Do something with deleted task
-        alert("Deleted successfully....!");
-        bcd.setUpdate(!bcd.update)
+      .then(() => {
+        alert("Deleted successfully!");
+        setUpdate(!update);
       })
       .catch((error) => {
-        // handle error
-        console.log(error);
+        console.error("Delete error:", error);
+        alert("Delete failed. Please try again.");
       });
   };
 
- 
   return (
-    <>
-    <Button onClick={() => bcd.boxClick()} variant={"warning"} className="fs-5 mb-3"> Add Data </Button>
-    <Table striped bordered hover variant="dark">
-      <thead className="text-center">
-        <tr className="fs-3">
-          <th className="p-4 bg-primary">S.No</th>
-          <th className="p-4 bg-primary">Name</th>
-          <th className="p-4 bg-primary">Email</th>
-          <th className="p-4 bg-primary">Location</th>
-          <th className="p-4 bg-primary">Phone No</th>
-          <th className="p-4 bg-primary">Qualification</th>
-          <th className="p-4 bg-primary">Action</th>
-        </tr>
-      </thead>
-      <tbody className="text-center">
-        {tableData &&
-          tableData.map((item, out) => {
-            return (
-              <tr className="fs-5">
-                <td className="p-3">{out + 1}</td>
-                <td className="p-3">{item.name}</td>
-                <td className="p-3">{item.emailId}</td>
-                <td className="p-3">{item.location}</td>
-                <td className="p-3">{item.phoneNo}</td>
-                <td className="p-3">{item.qualification}</td>
-                <td className="p-3">
-                  <Button
-                    onClick={() => bcd.boxClick(item)}
-                    variant="success me-3"
-                  >
-                    {" "}
-                    Edit{" "}
-                  </Button>
-                  <Button variant="danger" onClick={() => deleteUser(item.id)}>
-                    {" "}
-                    Delete{" "}
-                  </Button>
+    <div className="table-responsive">
+      <Button 
+        onClick={() => boxClick()} 
+        variant="warning" 
+        className="fs-5 mb-3"
+      >
+        Add Data
+      </Button>
+      
+      <Table striped bordered hover variant="light" className="tablemain">
+        <thead className="text-center">
+          <tr>
+            <th>S.No</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Location</th>
+            <th>Phone No</th>
+            <th>Qualification</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody className="text-center">
+          {tableData &&
+            tableData.map((item, index) => (
+              <tr key={item.id}>
+                <td>{index + 1}</td>
+                <td>{item.name}</td>
+                <td>{item.emailId}</td>
+                <td>{item.location}</td>
+                <td>{item.phoneNo}</td>
+                <td>{item.qualification}</td>
+                <td className="btn-cover">
+                  <div className="d-flex flex-wrap justify-content-center gap-1">
+                    <Button
+                      onClick={() => boxClick(item)}
+                      variant="success"
+                      className="actbtn"
+                    >
+                      Edit
+                    </Button>
+                    <Button 
+                      variant="danger" 
+                      onClick={() => deleteUser(item.id)} 
+                      className="actbtn"
+                    >
+                      Delete
+                    </Button>
+                  </div>
                 </td>
               </tr>
-            );
-          })}
-      </tbody>
-    </Table>
-    </>
+            ))}
+        </tbody>
+      </Table>
+    </div>
   );
 }
 

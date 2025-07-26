@@ -13,12 +13,58 @@
   flex-direction: column;
   gap: 30px;
 }
+.center{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.overall{
+  background: rgb(41, 40, 40);
+}
 tr{
   font-size: 1.3rem;
   text-align: center;
+}
+td{
+  font-size: 1rem;
+  padding: 3px !important;
+}
+.actbtn{
+  font-size: 10px !important;
+  padding: 5px 10px !important;
 }
 @media screen and (max-width: 900px) and (min-width: 600px){
   tr{
     font-size: 10px !important;
   }
+  th{
+     padding: 5px !important;
+  }
+  td{
+    font-size: 8px !important;
+    padding: 3px !important;
+  }
+  .actbtn{
+  font-size: 7px !important;
+  padding: 3px !important;
+}
+}
+@media screen and (max-width: 700px) and (min-width: 300px){
+tr{
+    font-size: 8px !important;
+  }
+  th{
+     padding: 3px !important;
+  }
+  td{
+    font-size: 7px !important;
+    padding: 2px !important;
+  }
+  .actbtn{
+  font-size: 5px !important;
+  padding: 3px !important;
+  }
+.overall{
+  overflow: scroll;
+}
 }
